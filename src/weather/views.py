@@ -4,6 +4,7 @@ import requests
 from pprint import pprint
 from .models import City
 from .forms import CityForm
+from django.contrib import messages
 
 
 def index(request):
@@ -16,17 +17,26 @@ def index(request):
     if request.method == "POST":
         form = CityForm(request.POST)
         if form.is_valid():
-            form.save()
+            new_city = form.cleaned_data["name"]  # request.POST.get("name")
+            if not City.objects.filter(name=new_city).exists():
+                r = requests.get(url.format(new_city))
+                if r.status_code == 200:
+                    form.save()
+                    messages.success(request, "City added successfully")
+                else:
+                    messages.warning(request, "City not found")
+            else:
+                messages.warning(request, "City already exist")
             return redirect("home")
     for city in cities:
         r = requests.get(url.format(city))
-        returned_data = r.json()
+        content = r.json()
 
         weather_data = {
             "city": city.name,
-            "temp": returned_data["main"]["temp"],
-            "description": returned_data["weather"][0]["description"],
-            "icon": returned_data["weather"][0]["icon"],
+            "temp": content["main"]["temp"],
+            "description": content["weather"][0]["description"],
+            "icon": content["weather"][0]["icon"],
         }
         city_data.append(weather_data)
     pprint(city_data)
