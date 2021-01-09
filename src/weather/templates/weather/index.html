@@ -9,6 +9,13 @@
 
 <body>
     <h1>Weather App</h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Add</button>
+    </form>
+    <hr />
+    <hr />
     {% for city in city_data %}
     {{ city.city }} <br />
     <img src="http://openweathermap.org/img/w/{{ city.icon }}.png" alt="Image"> <br>
