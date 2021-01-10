@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from decouple import config
 import requests
 from pprint import pprint
@@ -39,9 +39,20 @@ def index(request):
             "icon": content["weather"][0]["icon"],
         }
         city_data.append(weather_data)
-    pprint(city_data)
+    # pprint(city_data)
     context = {
         "city_data": city_data,
         "form": form
     }
     return render(request, "weather/index.html", context)
+
+
+def delete(request, city):
+    item = City.objects.get(name=city)
+    if request.method == "POST":
+        item.delete()
+        return redirect("home")
+    context = {
+        "item": item
+    }
+    return render(request, "weather/delete.html", context)

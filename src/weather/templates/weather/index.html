@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather</title>
+    <title>Weather-Home</title>
 </head>
 
 <body>
@@ -26,6 +26,11 @@
     <img src="http://openweathermap.org/img/w/{{ city.icon }}.png" alt="Image"> <br>
     {{ city.temp }} C<br />
     {{ city.description }} <br />
+
+    <a href="{% url 'delete' city.city %}">
+        <button>Delete</button>
+    </a>
+
     <hr />
     {% endfor %}
 
